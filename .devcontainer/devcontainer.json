@@ -1,0 +1,62 @@
+// Created from the "uv" template of Bare Dev Container Templates.
+// Usage, options, security defaults, and tips: https://github.com/bare-devcontainer/templates/tree/main/src/uv
+// What is installed in the image, and available tags: https://github.com/bare-devcontainer/images
+{
+  "name": "Python (uv)",
+  // Recommended: pin to a digest (e.g. "ghcr.io/bare-devcontainer/uv:trixie@sha256:<digest>").
+  // See https://github.com/bare-devcontainer/templates#pinning-images-to-a-digest
+  "image": "ghcr.io/bare-devcontainer/uv:trixie",
+  "remoteUser": "dev",
+  "runArgs": ["--cap-drop=ALL"],
+  // Remove "no-new-privileges" if users need to gain elevated privileges inside the container (e.g., su, sudo).
+  "appPort": ["3002:3002"],
+
+  "securityOpt": ["no-new-privileges"],
+  "init": true,
+  "containerEnv": {
+    // The cache volume and the workspace are different filesystems, so hardlinking would fail.
+    // See https://github.com/bare-devcontainer/templates/tree/main/src/uv#persistent-caches
+    "UV_LINK_MODE": "copy"
+  },
+  // If you use VS Code, uncomment the following to open $EDITOR/$VISUAL/$GIT_EDITOR (e.g. `git commit`) in a VS Code tab:
+  // "remoteEnv": {
+  //   "VISUAL": "code --wait",
+  //   "EDITOR": "code --wait",
+  //   "GIT_EDITOR": "code --wait"
+  // },
+  "mounts": [
+    // Persist uv's cache (downloaded Python interpreters and packages) across rebuilds.
+    {
+      "source": "${devcontainerId}-uv-cache",
+      "target": "/home/dev/.cache/uv",
+      "type": "volume"
+    }
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          }
+        }
+      }
+    }
+},
+"features": {
+	"ghcr.io/stu-bell/devcontainer-features/claude-code:0": {}
+},
+"remoteEnv": {
+                "ANTHROPIC_MODEL": "qwen3-coder:30b",
+                "ANTHROPIC_BASE_URL": "http://192.168.1.10:11434",
+                "ANTHROPIC_AUTH_TOKEN": "ollama",
+                "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+}
+}
