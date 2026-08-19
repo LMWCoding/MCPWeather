@@ -37,4 +37,4 @@ RUN uv sync --frozen --no-dev
 EXPOSE 3002
 
 # Run your application using virtual environment python executable
-CMD ["uv", "run", "python", "-m", "weatherserver"]
+CMD ["uv", "run", "python", "-m", "combinedserver"]

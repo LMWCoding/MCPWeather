@@ -51,7 +51,7 @@ pip install -e .
 
 Start the server:
 ```bash
-python weatherserver.py
+python combinedserver.py
 ```
 
 The service will be available at `http://localhost:3002`
