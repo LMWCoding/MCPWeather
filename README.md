@@ -51,7 +51,7 @@ pip install -e .
 
 Start the server:
 ```bash
-python server.py
+python weatherserver.py
 ```
 
 The service will be available at `http://localhost:3002`
@@ -70,6 +70,14 @@ The service will be available at `http://localhost:3002`
 - FastMCP 3.4.7+
 - httpx 0.28.1+
 
-## License
+## Docker Builds Instruction
 
-MIT
+This is used in dev container envrionment.  So have to take care of the building of container during development, and production.
+
+### Build only the production stage image
+
+docker build --target production -t my-python-product:latest .
+
+### Run the production container with port mapping
+
+docker run -d -p 3002:3002 --name my-product-app my-python-product:latest

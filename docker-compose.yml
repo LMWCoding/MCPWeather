@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    ports:
+      # Maps host port 3002 to container port 3002 across the host machine's interfaces
+      - "3002:3002"
+    restart: always

@@ -15,8 +15,10 @@
   // Prevents VS Code from executing the production CMD upon container startup
   "overrideCommand": true,
 
-  // Replaces appPort with standard devcontainer port forwarding
-  "forwardPorts": [3002],
+  //This opens the port 3002 in the container and maps it to port 3002 on the host machine  
+  "appPort": ["3002:3002"],
+  // forwardPorts just forward the port to the Client machine running the VS Code
+  // "forwardPorts": [3002],
 
   "containerEnv": {
     "UV_LINK_MODE": "copy"

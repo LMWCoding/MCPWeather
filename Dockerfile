@@ -16,6 +16,9 @@ FROM base AS development
 # Ensure user permissions and cache directories exist for the non-root 'dev' user
 USER dev
 
+# Expose development port (same as production for consistency)
+EXPOSE 3002
+
 # ==============================================================================
 # Stage 3: Production Stage (Standalone Product Container)
 # ==============================================================================
@@ -24,17 +27,14 @@ FROM base AS production
 # Switch to non-root user for security
 USER dev
 
-# Copy dependency files first to leverage Docker layer caching
-COPY --chown=dev:dev pyproject.toml uv.lock* ./
+# Copy dependency files and source code
+COPY --chown=dev:dev . .
 
 # Sync production dependencies using uv (creates /app/.venv)
 RUN uv sync --frozen --no-dev
-
-# Copy application source code into the image
-COPY --chown=dev:dev . .
 
 # Expose production port
 EXPOSE 3002
 
 # Run your application using virtual environment python executable
-CMD ["uv", "run", "python", "-m", "main"]
+CMD ["uv", "run", "python", "-m", "weatherserver"]
