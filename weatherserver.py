@@ -1,8 +1,8 @@
-import httpx
-from fastmcp import FastMCP
 import asyncio
 import logging
-from typing import Optional
+
+import httpx
+from fastmcp import FastMCP
 
 # Initialize FastMCP server
 mcp = FastMCP("SG-Weather")
@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 
 # Official data.gov.sg API endpoints
 FORECAST_2HR_API_URL = "https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast"
-FORECAST_24HR_API_URL = "https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast"
+FORECAST_24HR_API_URL = (
+    "https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast"
+)
 FORECAST_4DAY_API_URL = "https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook"
 TEMPERATURE_API_URL = "https://api-open.data.gov.sg/v2/real-time/api/air-temperature"
 RAINFALL_API_URL = "https://api-open.data.gov.sg/v2/real-time/api/rainfall"
@@ -31,7 +33,11 @@ RETRY_DELAY = 2.0
 @mcp.tool(
     name="get_sg_weather_forecast",  # Custom tool name for the LLM
     description="Fetch comprehensive weather forecasts including 2-hour, 24-hour, and 4-day forecasts for all areas in Singapore from the Singapore National Environment Agency (NEA).",  # Custom description
-    tags={"weather", "singapore", "forecast"},  # Optional tags for organization/filtering
+    tags={
+        "weather",
+        "singapore",
+        "forecast",
+    },  # Optional tags for organization/filtering
     meta={"version": "1.0", "lmw": "weather-team"},  # Custom metadata
 )
 async def get_sg_weather_forecast() -> str:
@@ -129,13 +135,17 @@ async def get_sg_weather_forecast() -> str:
                 temperature = general.get("temperature", {})
                 temp_low = temperature.get("low", "No data")
                 temp_high = temperature.get("high", "No data")
-                forecast_summary += f"Temperature range: {temp_low}°C to {temp_high}°C\n"
+                forecast_summary += (
+                    f"Temperature range: {temp_low}°C to {temp_high}°C\n"
+                )
 
                 # Get humidity range
                 humidity = general.get("relativeHumidity", {})
                 humidity_low = humidity.get("low", "No data")
                 humidity_high = humidity.get("high", "No data")
-                forecast_summary += f"Relative humidity: {humidity_low}% to {humidity_high}%\n"
+                forecast_summary += (
+                    f"Relative humidity: {humidity_low}% to {humidity_high}%\n"
+                )
 
                 # Get wind information
                 wind = general.get("wind", {})
@@ -187,21 +197,41 @@ async def get_sg_weather_forecast() -> str:
                     forecast_summary += "No detailed forecasts available.\n"
                 else:
                     for i, forecast in enumerate(forecasts):
-                        day = forecast.get("day", f"Day {i+1}")
+                        day = forecast.get("day", f"Day {i + 1}")
                         forecast_info = forecast.get("forecast", {})
                         forecast_text = forecast_info.get("text", "No data")
                         temp_low = forecast.get("temperature", {}).get("low", "No data")
-                        temp_high = forecast.get("temperature", {}).get("high", "No data")
-                        humidity_low = forecast.get("relativeHumidity", {}).get("low", "No data")
-                        humidity_high = forecast.get("relativeHumidity", {}).get("high", "No data")
-                        wind_direction = forecast.get("wind", {}).get("direction", "No data")
-                        wind_speed_low = forecast.get("wind", {}).get("speed", {}).get("low", "No data")
-                        wind_speed_high = forecast.get("wind", {}).get("speed", {}).get("high", "No data")
+                        temp_high = forecast.get("temperature", {}).get(
+                            "high", "No data"
+                        )
+                        humidity_low = forecast.get("relativeHumidity", {}).get(
+                            "low", "No data"
+                        )
+                        humidity_high = forecast.get("relativeHumidity", {}).get(
+                            "high", "No data"
+                        )
+                        wind_direction = forecast.get("wind", {}).get(
+                            "direction", "No data"
+                        )
+                        wind_speed_low = (
+                            forecast.get("wind", {})
+                            .get("speed", {})
+                            .get("low", "No data")
+                        )
+                        wind_speed_high = (
+                            forecast.get("wind", {})
+                            .get("speed", {})
+                            .get("high", "No data")
+                        )
 
                         forecast_summary += f"{day}:\n"
                         forecast_summary += f"  Forecast: {forecast_text}\n"
-                        forecast_summary += f"  Temperature: {temp_low}°C to {temp_high}°C\n"
-                        forecast_summary += f"  Humidity: {humidity_low}% to {humidity_high}%\n"
+                        forecast_summary += (
+                            f"  Temperature: {temp_low}°C to {temp_high}°C\n"
+                        )
+                        forecast_summary += (
+                            f"  Humidity: {humidity_low}% to {humidity_high}%\n"
+                        )
                         forecast_summary += f"  Wind: {wind_direction}, {wind_speed_low} to {wind_speed_high} km/h\n"
                         forecast_summary += "\n"
     except Exception as e:
@@ -386,4 +416,4 @@ async def health_check() -> str:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="http", host="0.0.0.0", port=3002)
+    mcp.run(transport="http", host="0.0.0.0", port=3002, path="/mcp")

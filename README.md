@@ -54,7 +54,9 @@ Start the server:
 python combinedserver.py
 ```
 
-The service will be available at `http://localhost:3002`
+The MCP endpoint is available at `http://localhost:3002/mcp`
+
+If you are connecting from another machine or container, use `http://<your-host-ip>:3002/mcp` instead.
 
 ## Robustness Features
 
