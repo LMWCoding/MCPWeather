@@ -12,22 +12,41 @@ A FastMCP-based weather service for Singapore that provides current weather cond
 
 ## Available Tools
 
-### 1. `get_sg_weather_forecast`
+The combined server (`combinedserver.py`) mounts two sub-servers, so tools are namespaced with `weather_` and `home_` prefixes.
+
+### Weather tools (namespace `weather_`)
+
+#### `weather_get_sg_weather_forecast`
+
 Fetches comprehensive weather forecasts including:
+
 - 2-hour weather forecast for all areas in Singapore
 - 24-hour weather forecast with detailed period breakdowns
 - 4-day weather outlook with temperature, humidity, and wind information
 
-### 2. `get_sg_current_weather`
+#### `weather_get_sg_current_weather`
+
 Fetches current weather data from all weather stations:
+
 - Temperature readings (°C)
 - Rainfall measurements (mm)
 - Humidity levels (%)
 - Wind speed (m/s)
 - Wind direction (degrees)
 
-### 3. `health_check`
+#### `weather_health_check`
+
 Simple health status check for the weather service.
+
+### Home automation tools (namespace `home_`)
+
+#### `home_control_home_device`
+
+Turn a home device on or off by room name (`master`, `boy`, `girl`, `living`, `study`) and device name (`Lights`, `TV`, `Fan`).
+
+#### `home_health_check`
+
+Simple health status check for the home automation service.
 
 ## API Endpoints Used
 
@@ -50,6 +69,7 @@ pip install -e .
 ## Usage
 
 Start the server:
+
 ```bash
 python combinedserver.py
 ```
@@ -72,14 +92,26 @@ If you are connecting from another machine or container, use `http://<your-host-
 - FastMCP 3.4.7+
 - httpx 0.28.1+
 
-## Docker Builds Instruction
+## Docker Build Instructions
 
-This is used in dev container envrionment.  So have to take care of the building of container during development, and production.
+This project is used in a dev container environment, so the container build must be handled carefully during both development and production.
 
 ### Build only the production stage image
 
-docker build --target production -t my-python-product:latest .
+```bash
+docker build --target production -t mcpweather:latest .
+```
 
 ### Run the production container with port mapping
 
-docker run -d -p 3002:3002 --name my-product-app my-python-product:latest
+```bash
+docker run -d -p 3002:3002 --name my-product-app mcpweather:latest
+```
+
+## Starting the server without dev container
+
+This uses Docker Compose to build and launch the server:
+
+```bash
+docker compose up -d --build
+```

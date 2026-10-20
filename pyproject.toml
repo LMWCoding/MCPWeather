@@ -1,7 +1,7 @@
 [project]
 name = "mcpweather"
 version = "0.1.0"
-description = "Add your description here"
+description = "FastMCP-based weather service for Singapore (NEA data) with home automation, served over MCP"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
